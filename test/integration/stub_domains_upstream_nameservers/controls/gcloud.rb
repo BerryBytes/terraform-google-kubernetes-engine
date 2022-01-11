@@ -42,9 +42,7 @@ control "gcloud" do
           "kubernetesDashboard" => {
             "disabled" => true,
           },
-          "networkPolicyConfig" => {
-            "disabled" => true,
-          },
+          "networkPolicyConfig" => {},
         )
       end
     end

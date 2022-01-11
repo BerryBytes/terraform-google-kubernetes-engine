@@ -39,8 +39,7 @@ output "client_token" {
 }
 
 output "ca_certificate" {
-  value     = module.example.ca_certificate
-  sensitive = true
+  value = module.example.ca_certificate
 }
 
 output "service_account" {

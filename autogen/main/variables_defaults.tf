@@ -40,6 +40,7 @@ locals {
     var.node_pools_metadata
   )
 
+{% if beta_cluster %}
   node_pools_taints = merge(
     { all = [] },
     { default-node-pool = [] },
@@ -50,6 +51,7 @@ locals {
     var.node_pools_taints
   )
 
+{% endif %}
   node_pools_tags = merge(
     { all = [] },
     { default-node-pool = [] },
@@ -69,16 +71,4 @@ locals {
     ),
     var.node_pools_oauth_scopes
   )
-  {% if beta_cluster %}
-
-  node_pools_linux_node_configs_sysctls = merge(
-    { all = {} },
-    { default-node-pool = {} },
-    zipmap(
-      [for node_pool in var.node_pools : node_pool["name"]],
-      [for node_pool in var.node_pools : {}]
-    ),
-    var.node_pools_linux_node_configs_sysctls
-  )
-  {% endif %}
 }

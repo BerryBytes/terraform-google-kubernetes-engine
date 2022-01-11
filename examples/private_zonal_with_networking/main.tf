@@ -14,17 +14,9 @@
  * limitations under the License.
  */
 
-data "google_client_config" "default" {}
-
-provider "kubernetes" {
-  host                   = "https://${module.gke.endpoint}"
-  token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(module.gke.ca_certificate)
-}
-
 module "gcp-network" {
   source       = "terraform-google-modules/network/google"
-  version      = "~> 3.1"
+  version      = "~> 2.0"
   project_id   = var.project_id
   network_name = var.network
 
@@ -38,7 +30,7 @@ module "gcp-network" {
   ]
 
   secondary_ranges = {
-    (var.subnetwork) = [
+    "${var.subnetwork}" = [
       {
         range_name    = var.ip_range_pods_name
         ip_cidr_range = "192.168.0.0/18"
@@ -59,7 +51,7 @@ data "google_compute_subnetwork" "subnetwork" {
 }
 
 module "gke" {
-  source     = "../../modules/private-cluster/"
+  source     = "../../modules/beta-private-cluster/"
   project_id = var.project_id
   name       = var.cluster_name
   regional   = false
@@ -81,4 +73,7 @@ module "gke" {
       display_name = "VPC"
     },
   ]
+}
+
+data "google_client_config" "default" {
 }

@@ -55,9 +55,7 @@ control "gcloud" do
           "kubernetesDashboard" => {
             "disabled" => true,
           },
-          "networkPolicyConfig" => {
-            "disabled" => true,
-          },
+          "networkPolicyConfig" => {},
         )
       end
     end
@@ -87,19 +85,41 @@ control "gcloud" do
         )
       end
 
-      it "has the expected initial node count" do
+      it "has autoscaling enabled" do
         expect(node_pools).to include(
           including(
-              "initialNodeCount" => 4,
-            )
+            "autoscaling" => including(
+              "enabled" => true,
+            ),
           )
+        )
+      end
+
+      it "has the expected minimum node count" do
+        expect(node_pools).to include(
+          including(
+            "autoscaling" => including(
+              "minNodeCount" => 1,
+            ),
+          )
+        )
+      end
+
+      it "has the expected maximum node count" do
+        expect(node_pools).to include(
+          including(
+            "autoscaling" => including(
+              "maxNodeCount" => 100,
+            ),
+          )
+        )
       end
 
       it "is the expected machine type" do
         expect(node_pools).to include(
           including(
             "config" => including(
-              "machineType" => "e2-standard-4",
+              "machineType" => "e2-medium",
             ),
           )
         )
@@ -121,7 +141,7 @@ control "gcloud" do
             "config" => including(
               "labels" => including(
                 "cluster_name" => cluster_name,
-                "node_pool" => "acm-node-pool",
+                "node_pool" => "default-node-pool",
               ),
             ),
           )
@@ -134,7 +154,7 @@ control "gcloud" do
             "config" => including(
               "tags" => match_array([
                 "gke-#{cluster_name}",
-                "gke-#{cluster_name}-acm-node-pool",
+                "gke-#{cluster_name}-default-node-pool",
               ]),
             ),
           )

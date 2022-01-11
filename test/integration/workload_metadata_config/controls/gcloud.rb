@@ -13,7 +13,7 @@
 # limitations under the License.
 
 project_id = attribute('project_id')
-registry_project_ids = attribute('registry_project_ids')
+registry_project_id = attribute('registry_project_id')
 location = attribute('location')
 cluster_name = attribute('cluster_name')
 service_account = attribute('service_account')
@@ -58,24 +58,19 @@ control "gcloud" do
     end
   end
 
-  registry_project_ids.each do |registry_project_id|
-    describe command("gcloud projects get-iam-policy #{registry_project_id} --format=json") do
-      its(:exit_status) { should eq 0 }
-      its(:stderr) { should eq '' }
+  describe command("gcloud projects get-iam-policy #{registry_project_id} --format=json") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq '' }
 
-      let!(:iam) do
-        if subject.exit_status == 0
-          JSON.parse(subject.stdout)
-        else
-          {}
-        end
+    let!(:iam) do
+      if subject.exit_status == 0
+        JSON.parse(subject.stdout)
+      else
+        {}
       end
-      it "has expected registry roles" do
-        expect(iam['bindings']).to include(
-          {"members" => ["serviceAccount:#{service_account}"], "role" => "roles/storage.objectViewer"},
-          {"members" => ["serviceAccount:#{service_account}"], "role" => "roles/artifactregistry.reader"}
-        )
-      end
+    end
+    it "has expected registry roles" do
+      expect(iam['bindings']).to include("members" => ["serviceAccount:#{service_account}"], "role" => "roles/storage.objectViewer")
     end
   end
 end

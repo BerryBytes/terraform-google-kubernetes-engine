@@ -72,7 +72,6 @@ output "client_token" {
 output "ca_certificate" {
   description = "The cluster CA certificate"
   value       = module.example.ca_certificate
-  sensitive   = true
 }
 
 output "service_account" {
@@ -80,6 +79,6 @@ output "service_account" {
   value       = module.example.service_account
 }
 
-output "registry_project_ids" {
-  value = var.registry_project_ids
+output "registry_project_id" {
+  value = var.registry_project_id
 }

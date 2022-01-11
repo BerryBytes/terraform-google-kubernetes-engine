@@ -18,7 +18,6 @@
 output "test_command" {
   description = "Test command to check connectivity."
   value       = local.test_command
-  sensitive   = true
 }
 
 output "cluster_version" {

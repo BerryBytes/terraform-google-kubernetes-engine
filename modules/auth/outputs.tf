@@ -19,12 +19,7 @@
 output "kubeconfig_raw" {
   sensitive   = true
   description = "A kubeconfig file configured to access the GKE cluster."
-  value = templatefile("${path.module}/templates/kubeconfig-template.yaml.tpl", {
-    context                = local.context
-    cluster_ca_certificate = local.cluster_ca_certificate
-    endpoint               = local.endpoint
-    token                  = data.google_client_config.provider.access_token
-  })
+  value       = data.template_file.kubeconfig.rendered
 }
 
 # Terraform providers (kubernetes, helm)

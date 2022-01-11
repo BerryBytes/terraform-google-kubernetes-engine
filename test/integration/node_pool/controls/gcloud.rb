@@ -17,7 +17,7 @@ location = attribute('location')
 cluster_name = attribute('cluster_name')
 
 expected_accelerators_count = "1"
-expected_accelerators_type = "nvidia-tesla-a100"
+expected_accelerators_type = "nvidia-tesla-p4"
 
 control "gcloud" do
   title "Google Compute Engine GKE configuration"
@@ -37,8 +37,7 @@ control "gcloud" do
       it "has the expected cluster autoscaling settings" do
         expect(data['autoscaling']).to eq({
             "autoprovisioningNodePoolDefaults" => {
-                "imageType"=>"COS_CONTAINERD",
-                "oauthScopes" => %w(https://www.googleapis.com/auth/cloud-platform),
+                "oauthScopes" => %w(https://www.googleapis.com/auth/logging.write https://www.googleapis.com/auth/monitoring),
                 "serviceAccount" => "default"
             },
             "autoscalingProfile" => "OPTIMIZE_UTILIZATION",
@@ -175,22 +174,6 @@ control "gcloud" do
             )
           )
         end
-
-        it "has the expected linux node config sysctls" do
-          expect(data['nodePools']).to include(
-            including(
-              "name" => "pool-01",
-              "config" => including(
-                "linuxNodeConfig" => including(
-                  "sysctls" => including(
-                    "net.core.netdev_max_backlog" => "10000",
-                    "net.core.rmem_max" => "10000"
-                  )
-                )
-              )
-            )
-          )
-        end
       end
 
       describe "pool-02" do
@@ -207,7 +190,7 @@ control "gcloud" do
             including(
               "name" => "pool-02",
               "config" => including(
-                "machineType" => "a2-highgpu-1g",
+                "machineType" => "n1-standard-2",
               ),
             )
           )
@@ -252,8 +235,7 @@ control "gcloud" do
               "name" => "pool-02",
               "config" => including(
                 "accelerators" => [{"acceleratorCount" => expected_accelerators_count,
-                                    "acceleratorType" => expected_accelerators_type,
-                                    "gpuPartitionSize" => "1g.5gb"}],
+                                    "acceleratorType" => expected_accelerators_type}],
               ),
             )
           )
@@ -321,21 +303,6 @@ control "gcloud" do
             )
           )
         end
-
-        it "has the expected linux node config sysctls" do
-          expect(data['nodePools']).to include(
-            including(
-              "name" => "pool-02",
-              "config" => including(
-                "linuxNodeConfig" => including(
-                  "sysctls" => including(
-                    "net.core.netdev_max_backlog" => "10000"
-                  )
-                )
-              )
-            )
-          )
-        end
       end
 
       describe "pool-03" do
@@ -352,7 +319,7 @@ control "gcloud" do
             including(
               "name" => "pool-03",
               "config" => including(
-                "machineType" => "n1-standard-2",
+                "machineType" => "e2-medium",
               ),
             )
           )
@@ -409,7 +376,6 @@ control "gcloud" do
                   "all-pools-example" => "true",
                   "cluster_name" => cluster_name,
                   "node_pool" => "pool-03",
-                  "sandbox.gke.io/runtime"=>"gvisor"
                 },
               ),
             )
@@ -427,58 +393,6 @@ control "gcloud" do
                   "gke-#{cluster_name}-pool-03",
                 ]),
               ),
-            )
-          )
-        end
-
-        it "has the expected pod range" do
-          expect(data['nodePools']).to include(
-            including(
-              "name" => "pool-03",
-              "networkConfig" => including(
-                "podIpv4CidrBlock" => "172.16.0.0/18",
-                "podRange" => "test"
-              )
-            )
-          )
-        end
-
-        it "has the expected image" do
-          expect(data['nodePools']).to include(
-            including(
-              "name" => "pool-03",
-              "config" => including(
-                "imageType" => "COS_CONTAINERD",
-              ),
-            )
-          )
-        end
-
-        it "has the expected kubelet config" do
-          expect(data['nodePools']).to include(
-            including(
-              "name" => "pool-03",
-              "config" => including(
-                "kubeletConfig" => including(
-                  "cpuManagerPolicy" => "static",
-                  "cpuCfsQuota" => true
-                )
-              )
-            )
-          )
-        end
-
-        it "has the expected linux node config sysctls" do
-          expect(data['nodePools']).to include(
-            including(
-              "name" => "pool-03",
-              "config" => including(
-                "linuxNodeConfig" => including(
-                  "sysctls" => including(
-                    "net.core.netdev_max_backlog" => "20000"
-                  )
-                )
-              )
             )
           )
         end

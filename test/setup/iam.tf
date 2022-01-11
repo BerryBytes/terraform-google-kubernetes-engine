@@ -25,7 +25,7 @@ locals {
     "roles/container.developer",
     "roles/iam.serviceAccountAdmin",
     "roles/iam.serviceAccountUser",
-    "roles/compute.admin",
+    "roles/compute.viewer",
     "roles/resourcemanager.projectIamAdmin",
     "roles/composer.worker",
     "roles/serviceusage.serviceUsageAdmin",
@@ -33,22 +33,15 @@ locals {
     "roles/compute.instanceAdmin",
     "roles/iam.roleAdmin",
     "roles/iap.admin",
-    "roles/gkehub.admin",
   ]
-
-  # roles as documented https://cloud.google.com/service-mesh/docs/installation-permissions
+  # roles as documented https://cloud.google.com/service-mesh/docs/gke-install-new-cluster#setting_up_your_project
   int_asm_required_roles = [
     "roles/editor",
-    "roles/compute.admin",
     "roles/container.admin",
     "roles/resourcemanager.projectIamAdmin",
-    "roles/servicemanagement.admin",
-    "roles/serviceusage.serviceUsageAdmin",
     "roles/iam.serviceAccountAdmin",
     "roles/iam.serviceAccountKeyAdmin",
-    "roles/meshconfig.admin",
     "roles/gkehub.admin",
-    "roles/privateca.admin",
   ]
 }
 

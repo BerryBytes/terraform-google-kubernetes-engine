@@ -48,7 +48,6 @@ variable "ip_range_services" {
   description = "The secondary ip range to use for services"
 }
 
-variable "registry_project_ids" {
-  description = "Project names for GCR registries"
-  type        = list(string)
+variable "registry_project_id" {
+  description = "Project name for the GCR registry"
 }

@@ -63,9 +63,7 @@ control "gcloud" do
           "kubernetesDashboard" => {
             "disabled" => true,
           },
-          "networkPolicyConfig" => {
-            "disabled" => true,
-          },
+          "networkPolicyConfig" => {},
         )
       end
     end
@@ -85,7 +83,7 @@ control "gcloud" do
         expect(data['nodePools']).to include(
           including(
             "config" => including(
-              "machineType" => "e2-medium",
+              "machineType" => "n1-standard-1",
             ),
           )
         )

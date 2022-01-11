@@ -27,7 +27,7 @@ resource "google_kms_key_ring" "db" {
 
 resource "google_kms_crypto_key" "db" {
   name     = local.name
-  key_ring = google_kms_key_ring.db.id
+  key_ring = google_kms_key_ring.db.self_link
 }
 
 module "this" {
@@ -49,7 +49,7 @@ module "this" {
 
   database_encryption = [{
     state    = "ENCRYPTED"
-    key_name = google_kms_crypto_key.db.id
+    key_name = google_kms_crypto_key.db.self_link
   }]
 
   cloudrun = true
@@ -61,9 +61,6 @@ module "this" {
   enable_binary_authorization = true
 
   enable_pod_security_policy = true
-
-  // Dataplane-V2 Feature
-  datapath_provider = "ADVANCED_DATAPATH"
 }
 
 data "google_client_config" "default" {
